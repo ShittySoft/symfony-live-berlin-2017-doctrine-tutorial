@@ -42,4 +42,9 @@ class User
             $hashingMechanism->hash($password)
         );
     }
+
+    public function logIn(string $password, callable $passwordVerification) : bool
+    {
+        return $passwordVerification($password, $this->passwordHash);
+    }
 }

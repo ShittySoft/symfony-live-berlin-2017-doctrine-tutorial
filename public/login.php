@@ -1,11 +1,18 @@
 <?php
 
-// 1. fetch user by email
-// 2. compare user password hash against given password
-// 3. is the user banned? (optional)
-// 4. log login (optional)
-// 5. store user identifier into the session
+use Authentication\EmailAddress;
+use Infrastructure\Authentication\Repository\FilesystemUsers;
 
-// discuss: should the fetching by password happen at database level?
-//          Should it happen inside the entity?
-//          Or in a service?
+require_once __DIR__ . '/../vendor/autoload.php';
+
+$repository = new FilesystemUsers(__DIR__ . '/../data/users');
+
+$user = $repository->get(new EmailAddress($_POST['emailAddress']));
+
+if ($user->logIn($_POST['password'], 'password_verify')) {
+    echo 'LOGIN OK';
+
+    return;
+}
+
+echo 'LOGIN KO';
