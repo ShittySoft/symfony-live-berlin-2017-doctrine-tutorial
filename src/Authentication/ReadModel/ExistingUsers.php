@@ -2,7 +2,9 @@
 
 namespace Authentication\ReadModel;
 
+use Authentication\EmailAddress;
+
 interface ExistingUsers
 {
-    public function userExists(string $emailAddress) : bool;
+    public function userExists(EmailAddress $emailAddress) : bool;
 }

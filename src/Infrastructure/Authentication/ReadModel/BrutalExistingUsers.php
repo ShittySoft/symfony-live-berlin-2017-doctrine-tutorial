@@ -2,6 +2,7 @@
 
 namespace Infrastructure\Authentication\ReadModel;
 
+use Authentication\EmailAddress;
 use Authentication\Repository\Users;
 
 final class BrutalExistingUsers implements \Authentication\ReadModel\ExistingUsers
@@ -16,7 +17,7 @@ final class BrutalExistingUsers implements \Authentication\ReadModel\ExistingUse
         $this->repository = $repository;
     }
 
-    public function userExists(string $emailAddress) : bool
+    public function userExists(EmailAddress $emailAddress) : bool
     {
         try {
             $this->repository->get($emailAddress);

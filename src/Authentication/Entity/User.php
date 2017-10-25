@@ -2,6 +2,8 @@
 
 namespace Authentication\Entity;
 
+use Authentication\EmailAddress;
+use Authentication\Password\HashPassword;
 use Authentication\ReadModel\ExistingUsers;
 
 class User
@@ -16,27 +18,28 @@ class User
      */
     private $passwordHash;
 
-    private function __construct(string $emailAddress, string $passwordHash)
+    private function __construct(EmailAddress $emailAddress, string $passwordHash)
     {
-        $this->emailAddress = $emailAddress;
+        $this->emailAddress = $emailAddress->toString();
         $this->passwordHash = $passwordHash;
     }
 
     public static function register(
-        string $emailAddress,
+        EmailAddress $emailAddress,
         string $password,
-        callable $hashingMechanism,
+        HashPassword $hashingMechanism,
         ExistingUsers $existingUsers
     ) : self {
         if ($existingUsers->userExists($emailAddress)) {
             throw new \LogicException(\sprintf(
                 'User "%s" is already registered',
-                $emailAddress
+                $emailAddress->toString()
             ));
         }
 
-        $hash = $hashingMechanism($password);
-
-        return new self($emailAddress, $hash);
+        return new self(
+            $emailAddress,
+            $hashingMechanism->hash($password)
+        );
     }
 }

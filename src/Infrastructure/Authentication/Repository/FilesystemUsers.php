@@ -2,6 +2,7 @@
 
 namespace Infrastructure\Authentication\Repository;
 
+use Authentication\EmailAddress;
 use Authentication\Entity\User;
 use Authentication\Repository\Users;
 
@@ -17,17 +18,16 @@ final class FilesystemUsers implements Users
         $this->directory = $directory;
     }
 
-    public function get(string $emailAddress) : User
+    public function get(EmailAddress $emailAddress) : User
     {
-        // @TODO LFI injection attack
-        if (! file_exists($this->directory . '/' . $emailAddress)) {
+        if (! file_exists($this->directory . '/' . $emailAddress->toString())) {
             throw new \OutOfBoundsException(\sprintf(
                 'User "%s" could not be found',
-                $emailAddress
+                $emailAddress->toString()
             ));
         }
 
-        return \unserialize(\file_get_contents($this->directory . '/' . $emailAddress));
+        return \unserialize(\file_get_contents($this->directory . '/' . $emailAddress->toString()));
     }
 
     public function store(User $user)
